@@ -1,13 +1,19 @@
+# ================================================================
 # visual help function: expand values for combination of attributes
+# =================================================================
 
 expandValues <- function(attributes, data) {
   combination <- expand.grid(
-    sapply( attributes, function(x){ levels(data[,x]) }, simplify = FALSE )
+    sapply( attributes, function(x){ c(levels(data[,x]),NA) }, simplify = FALSE )
   )
   combination <- apply(combination,1,function(x){paste(x, collapse = " + ")})
   names(combination) <- 1:length(combination)
   return(as.list(combination))
 }
+
+# ===================
+# write YAML-template
+# ===================
 
 write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
 
@@ -19,10 +25,10 @@ write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
       originalValues <- levels(data[,attribute])
     }
     return(list(
+      recodingOf = attribute,
       attribute = NULL,
       values = list(NULL,NULL),
       link = NULL,
-      recodingOf = attribute,
       originalValues = originalValues
       ))
   }
@@ -48,6 +54,10 @@ write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
   }
 }
 
+# ========================================
+# Read YAML files, and normalize shortcuts
+# ========================================
+
 read.recoding <- function(recoding, file = NULL, data = NULL) {
   
   # recodings can be a file as input
@@ -65,7 +75,7 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
   }
   
   # Allow for various shortcuts in the writing of recodings
-  reallabels <- c("attribute", "values", "link", "recodingOf", "originalValues", "doNotRecode")
+  reallabels <- c("recodingOf", "attribute", "values", "link", "originalValues", "doNotRecode")
   for (i in 1:length(recoding)) {
     # write labels in full
     names(recoding[[i]]) <- reallabels[pmatch(names(recoding[[i]]),reallabels)]    
@@ -129,10 +139,17 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
   }
 }
 
+# ======================
+# recode data according to specifications in recoding
+#=======================
+
 recode <- function(data,recoding) {
 
   # expand the possible shortcuts in the formulation of a recoding
   recoding <- read.recoding(recoding)
+
+  # replace zero-links with NA
+  
   
   # recoding of a single new attribute
   makeAttribute <- function(recoding) {
@@ -141,6 +158,8 @@ recode <- function(data,recoding) {
     if (!is.null(recoding$doNotRecode)) {
       newAttribute <- data[,recoding$doNotRecode, drop = FALSE]
     } else {
+      
+      recoding$link[recoding$link == 0]  <- NA
       
       # simple when it is based on a single old attribute
       if (length(recoding$recodingOf) == 1) {
@@ -155,7 +174,9 @@ recode <- function(data,recoding) {
         newAttribute <- data[,recoding$recodingOf, drop = FALSE]
         newAttribute <- apply(newAttribute,1,function(x){paste(x, collapse = " + ")})
         match <- expand.grid(
-          sapply(recoding$recodingOf, function(x){ levels(data[,x]) }, simplify = FALSE )
+          sapply(recoding$recodingOf, function(x){ 
+            c(levels(data[,x]),NA) 
+            }, simplify = FALSE )
           )
         match <- apply(match,1,function(x){paste(x, collapse = " + ")})
         newAttribute <- factor(newAttribute, levels = match)

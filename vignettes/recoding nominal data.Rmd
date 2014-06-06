@@ -20,7 +20,7 @@ As an example, consider the following toy data frame with two attributes `size` 
 ```{r nominalData}
 data <- data.frame(
     size = c('large','very small','small','large','very small','tiny'),
-    kind = c('young male','young female','old female','old male','old male','young female'),
+    kind = c('young male','young female','old female','old male',NA,'young female'),
     row.names = paste('obs', 1:6, sep='')
     )
 data
@@ -30,7 +30,7 @@ data
 
 The first kind of recoding to be exemplified here is to merge values. The first attribute of in our data has four values: `large`, `small`, `very small` and `tiny`. Suppose we would like to merge the values `small`, `very small` and `tiny` into one value value `small`. What we have to do is to define a new attribute with new values, and link the original values to our new values. In practice such a recoding looks as shown below: a list with a new name for the new attribute (`attribute=`), names for the new values of this attribute (`values=`), the name of the original attribute that is to be recoded (`recodingOf=`), and the central informatin for the recoding: the link-vector (`link=`). 
 
-The link-vector has the same length as to the number of values of the original attribute in the order as given by `levels(data$size)` viz. in this case `r levels(data$size)`. These four original values are linked to the new values as specified in the link-vector: the first original value is linked to the first new value (`1`), the second original value is linked to the second new value (`2`), the third original value to the second new value, etc.
+The link-vector has the same length as to the number of values of the original attribute in the order as given by `levels(data$size)` viz. in this case `r levels(data$size)`. These four original values are linked to the new values as specified in the link-vector: the first original value is linked to the first new value (1), the second original value is linked to the second new value (2), the third original value to the second new value (2), etc. A zero in this link-vector is designated for values that should not be linked (i.e. NA, but that does not work in YAML, see below.)
 
 The function `recode` taked the original data and the recoding-specification, and returns the new, recoded, data:
 
@@ -38,10 +38,10 @@ The function `recode` taked the original data and the recoding-specification, an
 # Specifying a recoding
 recoding <- list(
   list(
+    recodingOf = 'size',
     attribute = 'newSize',
     values = c('large','small'),
-    link = c(1,2,2,2),
-    recodingOf = 'size'
+    link = c(1,2,2,2)
     )
   )
 # Do the actual recoding and see the results
@@ -52,26 +52,26 @@ recode(data, recoding)
 
 The recoding-object has a doubly-embedded list structure, which might seem superfluous, but this is because the example above only specifies a single new attribute. To specify more than one attribute, simply various such specification can be listed, as illustrated below. In the following example, the second original attribute (`kind`) is split into two new attributes (`gender` and `age`), but such a split is simply represented as two different ways of merging the values. In total, our recoding example has now been extended to recoding three different new attributes.
 
- ```{r mergesplit}
+```{r mergesplit}
 # Specifying the recoding of three different new attributes
 recoding <- list(
   list(
+    recodingOf = 'size',
     attribute = 'size',
     values = c('large','small'),
-    link = c(1,2,2,2),
-    recodingOf = 'size'
+    link = c(1,2,2,2)
     ),
   list(
+    recodingOf = 'kind',
     attribute = 'gender',
     values = c('female','male'),
-    link = c(1,2,1,2),
-    recodingOf = 'kind'
+    link = c(1,2,1,2)
     ),
   list(
+    recodingOf = 'kind',
     attribute = 'age',
     values = c('old','young'),
-    link = c(1,1,2,2),
-    recodingOf = 'kind'
+    link = c(1,1,2,2)
     )
   )
 # Do the recoding and show it
@@ -81,24 +81,24 @@ newdata
 
 ### Merge attributes
 
-Combining various attributes into a singly new attribute works very similar, only that there are multiple attributes specified at `recodingOf`.
+Combining various attributes into a singly new attribute works very similar, only that there are multiple attributes specified at `recodingOf`. Note that there are various zeros in the link-vector, specifying that some value-combinations are not to be linked.
 
 ```{r mergeattributes}
 back_recoding <- list(
   list(
+    recodingOf = c('size','age'),
     attribute = 'size+age',
     values = c('large+old','large+young','small+old','small+young'),
-    link = c(1,3,2,4),
-    recodingOf = c('size','age')
+    link = c(1,3,0,2,4,0,0,0,0,0)
     )
   )
 recode(newdata, back_recoding)
 ```
 
-To get the order of the link-vector right, one has to realize that the recoding of two attributes is based on the cross-section of the values from the two attributes. Internally, this uses the function `expand.grid`, leading in the current example to the following four values to be recoded. For larger mergers (with multiple attributes, or with attributes that have many values) this can become rather tedious, because there are very many possible combinations that all have to linked in the link-vector.
+To get the indices (including zeros) of the link-vector right, one has to realize that the recoding of two attributes is based on the cross-section of the values from the two attributes, including possible NAs. Internally, this uses the function `expand.grid`, leading in the current example to the following four values to be recoded. For larger mergers (with multiple attributes, or with attributes that have many values) this can become rather tedious, because there are very many possible combinations that all have to linked in the link-vector.
 
 ```{r expandgrid}
-expand.grid(levels(newdata$size),levels(newdata$age))
+expand.grid(c(levels(newdata$size),NA),c(levels(newdata$age),NA))
 ```
 
 ### Using recoding templates
@@ -128,23 +128,25 @@ To illustrate these possibilities, consider the following recoding of our toy da
 
 ```{r shortcuts}
 short_recoding <- list(
-  # same as first example at the start of this vignette, using abbreviations and a different order
+  # same as first example at the start of this vignette
+  # using abbreviations and a different order
   list(
-    l = c(1,2,2,2),
     r = 'size',
     a = 'newSize',
+    l = c(1,2,2,2),
     v = c('large','small')
     ),
   # same new attribute, but with automatically generated names
   list(
-    l = c(1,2,2,2),
-    r = 'size'
+    r = 'size',
+    l = c(1,2,2,2)
     ),
   # keep original attribute in column 2 of the data
   list(
     r = 2
     ),
-  # add three times the first original attribute: senseless, but it illustrates the possibilities
+  # add three times the first original attribute
+  # senseless, but it illustrates the possibilities
   list(
     d = c(1,1,1)
     )
@@ -156,12 +158,12 @@ Note that this short_recoding would be really short when written manually in YAM
 
 ```
 recoding:
-- l: [1,2,2,2]
-  r: size
+- r: size
   a: newSize
   v: [large, small]
-- l: [1,2,2,2]
-  r: size
+  l: [1,2,2,2]
+- r: size
+  l: [1,2,2,2]
 - r: 2
 - d: [1,1,1]
 ```
