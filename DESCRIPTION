@@ -1,4 +1,4 @@
-Package: qlcRecoding
+Package: qlcRecode
 Type: Package
 Title: Functions for the recoding of data for Quantitative Language Comparison (QLC)
 Version: 0.1

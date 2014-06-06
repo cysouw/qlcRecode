@@ -1,6 +1,6 @@
-\name{qlcRecoding-package}
-\alias{qlcRecoding-package}
-\alias{qlcRecoding}
+\name{qlcRecode-package}
+\alias{qlcRecode-package}
+\alias{qlcRecode}
 \docType{package}
 \title{
 Functions for the recoding of data for Quantitative Language Comparison (QLC)
@@ -10,7 +10,7 @@ When using external data, there are often various tweaks that one would like to 
 }
 \details{
 \tabular{ll}{
-Package: \tab qlcRecoding\cr
+Package: \tab qlcRecode\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
 Date: \tab 2014-06-06\cr
