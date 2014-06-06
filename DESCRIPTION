@@ -1,0 +1,13 @@
+Package: qlcRecoding
+Type: Package
+Title: Functions for the recoding of data for Quantitative Language Comparison (QLC)
+Version: 0.1
+Date: 2014-06-06
+Author: Michael Cysouw
+Maintainer: Michael Cysouw <cysouw@mac.com>
+Description: When using external data, there are often various tweaks that one would like to perform before using the data for further research. This package offers assistance for some common recoding problems occurring in Quantitative Language Comparison (QLC)
+License: GPL-3
+Encoding: UTF-8
+Depends: yaml (>= 2.1.11)
+Suggests: knitr
+VignetteBuilder: knitr
