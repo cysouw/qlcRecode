@@ -1,13 +1,22 @@
+---
+title: Recoding nominal data
+author: Michael Cysouw <cysouw@mac.com>
+output:
+  pdf_document:
+    number_sections: yes
+  md_document:
+    variant: markdown_github
+---
 <!--
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Transforming data into sparse matrices}
+%\VignetteIndexEntry{Recoding nominal data}
 -->
 
 ```{r setup, include = FALSE}
 library(qlcRecode)
 ```
 
-# Recoding nominal data
+# Introduction
 
 A common situation in comparative linguistic data collection is that data is encoded as nominal ('categorical') attributes. An attribute is conceived as a finite list of possibilities, viz. the values of the attribute. Although this is of course a completely noremal and widespread practice in data encoding, in comparative linguistics it is mostly not trivial to decide on the delimitation of the different values. There is often ample discussion about the best way to separate the attested variation into types (terms like 'types', 'categories' or 'values' will the considered as equivalent here), and in general there is often no optimal or preferred way how to define the different types.
 
@@ -26,7 +35,7 @@ data <- data.frame(
 data
 ```
 
-### Merge values
+# Merge values
 
 The first kind of recoding to be exemplified here is to merge values. The first attribute of in our data has four values: `large`, `small`, `very small` and `tiny`. Suppose we would like to merge the values `small`, `very small` and `tiny` into one value value `small`. What we have to do is to define a new attribute with new values, and link the original values to our new values. In practice such a recoding looks as shown below: a list with a new name for the new attribute (`attribute=`), names for the new values of this attribute (`values=`), the name of the original attribute that is to be recoded (`recodingOf=`), and the central informatin for the recoding: the link-vector (`link=`). 
 
@@ -48,7 +57,7 @@ recoding <- list(
 recode(data, recoding)
 ```
 
-### Split attributes
+# Split attributes
 
 The recoding-object has a doubly-embedded list structure, which might seem superfluous, but this is because the example above only specifies a single new attribute. To specify more than one attribute, simply various such specification can be listed, as illustrated below. In the following example, the second original attribute (`kind`) is split into two new attributes (`gender` and `age`), but such a split is simply represented as two different ways of merging the values. In total, our recoding example has now been extended to recoding three different new attributes.
 
@@ -79,7 +88,7 @@ newdata <- recode(data, recoding)
 newdata
 ```
 
-### Merge attributes
+# Merge attributes
 
 Combining various attributes into a singly new attribute works very similar, only that there are multiple attributes specified at `recodingOf`. Note that there are various zeros in the link-vector, specifying that some value-combinations are not to be linked.
 
@@ -101,7 +110,7 @@ To get the indices (including zeros) of the link-vector right, one has to realiz
 expand.grid(c(levels(newdata$size),NA),c(levels(newdata$age),NA))
 ```
 
-### Using recoding templates
+# Using recoding templates
 
 Specifying recodings is often rather tedious within R. Also, the resulting nested list datastructure in R is not very insightful to share or publish. As an alternative, I propose to use a YAML representation of the recoding for editing and sharing. The function `write.recoding.template` can be used to produce a template that can then be manually edited. All the necessary information for the recoding will be included in the file.
 
@@ -113,7 +122,7 @@ The function `recode` also accepts a path to a YAML-file as an input of a recodi
 cat(as.yaml(write.recoding.template(list(1,c(1,2)),data,yaml=F)))
 ```
 
-### Using recoding shortcuts
+# Using recoding shortcuts
 
 It is of course also possible to just manually write a recoding structure, either directly as a list within R or as a YAML-file. To make this even easier, the function `read.recoding` (used internally in `recode` as well) allows for various shortcuts in the formulation of a recoding:
 
