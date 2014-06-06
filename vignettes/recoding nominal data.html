@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Recoding nominal data</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Transforming data into sparse matrices}
+-->
+
+<h1>Recoding nominal data</h1>
+
+<p>A common situation in comparative linguistic data collection is that data is encoded as nominal (&#39;categorical&#39;) attributes. An attribute is conceived as a finite list of possibilities, viz. the values of the attribute. Although this is of course a completely noremal and widespread practice in data encoding, in comparative linguistics it is mostly not trivial to decide on the delimitation of the different values. There is often ample discussion about the best way to separate the attested variation into types (terms like &#39;types&#39;, &#39;categories&#39; or &#39;values&#39; will the considered as equivalent here), and in general there is often no optimal or preferred way how to define the different types.</p>
+
+<p>In practice then, different scholars will often like to interpret data differently. One common wish is to be able to recode data that has already been categorised into types by a different. Note that such a recoding of course will never be able to easily split types, because for that goal a complete reconsideration of all underlying raw data is necessary, something that will not be further considered here.</p>
+
+<p>Given any given nominal data set (like for example the WALS data, as included in this package), there are various transformations that are often requested, and that are reasonably easy to perform: <em>merge values</em> and <em>split attributes</em>. A third kind recoding, <em>merge attributes</em> is also possible, but needs a bit more effort. Furthermore, the actual recoding will consist of just a few lists of information, which allows for an easy way to share and publish the actual recoding decisions.</p>
+
+<p>As an example, consider the following toy data frame with two attributes <code>size</code> and <code>kind</code>.</p>
+
+<pre><code class="r">data &lt;- data.frame(
+    size = c(&#39;large&#39;,&#39;very small&#39;,&#39;small&#39;,&#39;large&#39;,&#39;very small&#39;,&#39;tiny&#39;),
+    kind = c(&#39;young male&#39;,&#39;young female&#39;,&#39;old female&#39;,&#39;old male&#39;,&#39;old male&#39;,&#39;young female&#39;),
+    row.names = paste(&#39;obs&#39;, 1:6, sep=&#39;&#39;)
+    )
+data
+</code></pre>
+
+<pre><code>##            size         kind
+## obs1      large   young male
+## obs2 very small young female
+## obs3      small   old female
+## obs4      large     old male
+## obs5 very small     old male
+## obs6       tiny young female
+</code></pre>
+
+<h3>Merge values</h3>
+
+<p>The first kind of recoding to be exemplified here is to merge values. The first attribute of in our data has four values: <code>large</code>, <code>small</code>, <code>very small</code> and <code>tiny</code>. Suppose we would like to merge the values <code>small</code>, <code>very small</code> and <code>tiny</code> into one value value <code>small</code>. What we have to do is to define a new attribute with new values, and link the original values to our new values. In practice such a recoding looks as shown below: a list with a new name for the new attribute (<code>attribute=</code>), names for the new values of this attribute (<code>values=</code>), the name of the original attribute that is to be recoded (<code>recodingOf=</code>), and the central informatin for the recoding: the link-vector (<code>link=</code>). </p>
+
+<p>The link-vector has the same length as to the number of values of the original attribute in the order as given by <code>levels(data$size)</code> viz. in this case large, small, tiny, very small. These four original values are linked to the new values as specified in the link-vector: the first original value is linked to the first new value (<code>1</code>), the second original value is linked to the second new value (<code>2</code>), the third original value to the second new value, etc.</p>
+
+<p>The function <code>recode</code> taked the original data and the recoding-specification, and returns the new, recoded, data:</p>
+
+<pre><code class="r"># Specifying a recoding
+recoding &lt;- list(
+  list(
+    attribute = &#39;newSize&#39;,
+    values = c(&#39;large&#39;,&#39;small&#39;),
+    link = c(1,2,2,2),
+    recodingOf = &#39;size&#39;
+    )
+  )
+# Do the actual recoding and see the results
+recode(data, recoding)
+</code></pre>
+
+<pre><code>##      newSize
+## obs1   large
+## obs2   small
+## obs3   small
+## obs4   large
+## obs5   small
+## obs6   small
+</code></pre>
+
+<h3>Split attributes</h3>
+
+<p>The recoding-object has a doubly-embedded list structure, which might seem superfluous, but this is because the example above only specifies a single new attribute. To specify more than one attribute, simply various such specification can be listed, as illustrated below. In the following example, the second original attribute (<code>kind</code>) is split into two new attributes (<code>gender</code> and <code>age</code>), but such a split is simply represented as two different ways of merging the values. In total, our recoding example has now been extended to recoding three different new attributes.</p>
+
+<pre><code class="r"> # Specifying the recoding of three different new attributes
+ recoding &lt;- list(
+  list(
+    attribute = &#39;size&#39;,
+    values = c(&#39;large&#39;,&#39;small&#39;),
+    link = c(1,2,2,2),
+    recodingOf = &#39;size&#39;
+    ),
+  list(
+    attribute = &#39;gender&#39;,
+    values = c(&#39;female&#39;,&#39;male&#39;),
+    link = c(1,2,1,2),
+    recodingOf = &#39;kind&#39;
+    ),
+  list(
+    attribute = &#39;age&#39;,
+    values = c(&#39;old&#39;,&#39;young&#39;),
+    link = c(1,1,2,2),
+    recodingOf = &#39;kind&#39;
+    )
+  )
+ # Do the recoding and show it
+ newdata &lt;- recode(data, recoding)
+ newdata
+</code></pre>
+
+<pre><code> ##       size gender   age
+ ## obs1 large   male young
+ ## obs2 small female young
+ ## obs3 small female   old
+ ## obs4 large   male   old
+ ## obs5 small   male   old
+ ## obs6 small female young
+</code></pre>
+
+<h3>Merge attributes</h3>
+
+<p>Combining various attributes into a singly new attribute works very similar, only that there are multiple attributes specified at <code>recodingOf</code>.</p>
+
+<pre><code class="r">back_recoding &lt;- list(
+  list(
+    attribute = &#39;size+age&#39;,
+    values = c(&#39;large+old&#39;,&#39;large+young&#39;,&#39;small+old&#39;,&#39;small+young&#39;),
+    link = c(1,3,2,4),
+    recodingOf = c(&#39;size&#39;,&#39;age&#39;)
+    )
+  )
+recode(newdata, back_recoding)
+</code></pre>
+
+<pre><code>##         size.age
+## obs1 large+young
+## obs2 small+young
+## obs3   small+old
+## obs4   large+old
+## obs5   small+old
+## obs6 small+young
+</code></pre>
+
+<p>To get the order of the link-vector right, one has to realize that the recoding of two attributes is based on the cross-section of the values from the two attributes. Internally, this uses the function <code>expand.grid</code>, leading in the current example to the following four values to be recoded. For larger mergers (with multiple attributes, or with attributes that have many values) this can become rather tedious, because there are very many possible combinations that all have to linked in the link-vector.</p>
+
+<pre><code class="r">expand.grid(levels(newdata$size),levels(newdata$age))
+</code></pre>
+
+<pre><code>##    Var1  Var2
+## 1 large   old
+## 2 small   old
+## 3 large young
+## 4 small young
+</code></pre>
+
+<h3>Using recoding templates</h3>
+
+<p>Specifying recodings is often rather tedious within R. Also, the resulting nested list datastructure in R is not very insightful to share or publish. As an alternative, I propose to use a YAML representation of the recoding for editing and sharing. The function <code>write.recoding.template</code> can be used to produce a template that can then be manually edited. All the necessary information for the recoding will be included in the file.</p>
+
+<p>The list of the attributes that one wants to recode should be specified as a <strong>list</strong> in the function <code>write.recoding.template</code>. In that way it is possible to both recode individual attributes, but also combinations of attributes. For example, <code>write.recoding.template( list(1, c(1,2)), data = data, file = file)</code> will write the following YAML information to <code>file</code>. The tildes <code>~</code> show the missing information to be added. Note that the second recoding is a combination of two attributes.</p>
+
+<p>The function <code>recode</code> also accepts a path to a YAML-file as an input of a recoding.</p>
+
+<pre><code>## title: ~
+## author: ~
+## date: &#39;2014-06-06&#39;
+## original_data: ~
+## recoding:
+## - attribute: ~
+##   values:
+##   - ~
+##   - ~
+##   link: ~
+##   recodingOf: size
+##   originalValues:
+##   - large
+##   - small
+##   - tiny
+##   - very small
+## - attribute: ~
+##   values:
+##   - ~
+##   - ~
+##   link: ~
+##   recodingOf:
+##   - size
+##   - kind
+##   originalValues:
+##     &#39;1&#39;: large + old female
+##     &#39;2&#39;: small + old female
+##     &#39;3&#39;: tiny + old female
+##     &#39;4&#39;: very small + old female
+##     &#39;5&#39;: large + old male
+##     &#39;6&#39;: small + old male
+##     &#39;7&#39;: tiny + old male
+##     &#39;8&#39;: very small + old male
+##     &#39;9&#39;: large + young female
+##     &#39;10&#39;: small + young female
+##     &#39;11&#39;: tiny + young female
+##     &#39;12&#39;: very small + young female
+##     &#39;13&#39;: large + young male
+##     &#39;14&#39;: small + young male
+##     &#39;15&#39;: tiny + young male
+##     &#39;16&#39;: very small + young male
+</code></pre>
+
+<h3>Using recoding shortcuts</h3>
+
+<p>It is of course also possible to just manually write a recoding structure, either directly as a list within R or as a YAML-file. To make this even easier, the function <code>read.recoding</code> (used internally in <code>recode</code> as well) allows for various shortcuts in the formulation of a recoding:</p>
+
+<ul>
+<li><strong>Order is unimportant:</strong> Because every recoding is a labelled list, the ordering of the specifications can be entered at will. The order will be harmonized by <code>read.recoding</code></li>
+<li><strong>Abbreviate labels:</strong> The labels of the specifications (like <code>attribute</code> or <code>link</code>) can be abbreviated, and in practice the first letter suffices.</li>
+<li><strong>Leave out names:</strong> For a recoding, only <code>link</code> and <code>recodingOf</code> are minimally necessary. New attribute and value names are added automatically when nothing is specified. The automatically specified names are not very useful though (they look like <code>Att1</code> or <code>Val4</code>). Manual specification of names is strongly preferred.</li>
+<li><strong>Keep original attribute by not specifying <code>link</code>:</strong> When no <code>link</code> is specified, the original attribute from <code>recodingOf</code> will simply be copied verbatim, without any recoding.</li>
+<li><strong>Use column numbers instead of attribute names:</strong> Instead of the names of the original attributes it is also possible to specify the number of the column in the original data frame.</li>
+<li><strong>Use <code>doNotRecode</code> to keep original attributes:</strong> To add original attributes without recoding them it is also possible to use <code>doNotRecode=</code> (possible abbreviated as <code>d=</code>), followed by a vector with the column numbers of the original data to be copied.</li>
+</ul>
+
+<p>To illustrate these possibilities, consider the following recoding of our toy dataset:</p>
+
+<pre><code class="r">short_recoding &lt;- list(
+  # same as first example at the start of this vignette, using abbreviations and a different order
+  list(
+    l = c(1,2,2,2),
+    r = &#39;size&#39;,
+    a = &#39;newSize&#39;,
+    v = c(&#39;large&#39;,&#39;small&#39;)
+    ),
+  # same new attribute, but with automatically generated names
+  list(
+    l = c(1,2,2,2),
+    r = &#39;size&#39;
+    ),
+  # keep original attribute in column 2 of the data
+  list(
+    r = 2
+    ),
+  # add three times the first original attribute: senseless, but it illustrates the possibilities
+  list(
+    d = c(1,1,1)
+    )
+  )
+recode(data, short_recoding)
+</code></pre>
+
+<pre><code>##      newSize Att2         kind       size     size.1     size.2
+## obs1   large val1   young male      large      large      large
+## obs2   small val2 young female very small very small very small
+## obs3   small val2   old female      small      small      small
+## obs4   large val1     old male      large      large      large
+## obs5   small val2     old male very small very small very small
+## obs6   small val2 young female       tiny       tiny       tiny
+</code></pre>
+
+<p>Note that this short_recoding would be really short when written manually in YAML:</p>
+
+<pre><code>recoding:
+- l: [1,2,2,2]
+  r: size
+  a: newSize
+  v: [large, small]
+- l: [1,2,2,2]
+  r: size
+- r: 2
+- d: [1,1,1]
+</code></pre>
+
+<p>To document the recoding, it is to be preferred to expand all the shortcuts to their full text. This can be done by using <code>read.recoding</code>. When <code>file</code> is specified here, then the result is written to a YAML file that can be easily shared or published as documentation of the recoding.</p>
+
+<pre><code class="r">read.recoding(short_recoding, file = yourFile , data =  data)
+</code></pre>
+
+<pre><code>## title: ~
+## author: ~
+## date: &#39;2014-06-06&#39;
+## recoding:
+## - attribute: newSize
+##   values:
+##   - large
+##   - small
+##   link:
+##   - 1
+##   - 2
+##   - 2
+##   - 2
+##   recodingOf: size
+##   originalValues:
+##   - large
+##   - small
+##   - tiny
+##   - very small
+## - attribute: Att2
+##   values:
+##   - val1
+##   - val2
+##   - val3
+##   - val4
+##   link:
+##   - 1
+##   - 2
+##   - 2
+##   - 2
+##   recodingOf: size
+##   originalValues:
+##   - large
+##   - small
+##   - tiny
+##   - very small
+## - doNotRecode: kind
+## - doNotRecode:
+##   - size
+##   - size
+##   - size
+</code></pre>
+
+</body>
+
+</html>
+
