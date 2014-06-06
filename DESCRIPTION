@@ -1,6 +1,6 @@
 Package: qlcRecode
 Type: Package
-Title: Functions for the recoding of data for Quantitative Language Comparison (QLC)
+Title: Functions for data recoding in Quantitative Language Comparison (QLC)
 Version: 0.1
 Date: 2014-06-06
 Author: Michael Cysouw

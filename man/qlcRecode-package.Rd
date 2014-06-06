@@ -3,7 +3,7 @@
 \alias{qlcRecode}
 \docType{package}
 \title{
-Functions for the recoding of data for Quantitative Language Comparison (QLC)
+Functions for data recoding in Quantitative Language Comparison (QLC)
 }
 \description{
 When using external data, there are often various tweaks that one would like to perform before using the data for further research. This package offers assistance for some common recoding problems occurring in Quantitative Language Comparison (QLC). Currently only the recoding of nominal data is implemented.
