@@ -29,7 +29,8 @@ write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
       attribute = NULL,
       values = list(NULL,NULL),
       link = NULL,
-      originalValues = originalValues
+      originalValues = originalValues,
+      comments = NULL
       ))
   }
   
@@ -48,7 +49,9 @@ write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
     if (is.null(file)) {
       stop("please specify file")
     }
-    cat(as.yaml(result), file = file)
+    yaml <- as.yaml(result)
+    yaml <- gsub("\n- recodingOf:","\n# ==========\n- recodingOf:",yaml)
+    cat(yaml, file = file)
   } else {
     return(result)
   }
@@ -61,6 +64,7 @@ write.recoding.template <- function(attributes, data, file, yaml = TRUE) {
 read.recoding <- function(recoding, file = NULL, data = NULL) {
   
   # recodings can be a file as input
+  # remember any metadata already included
   if (is.character(recoding)) {
     infile <- yaml.load_file(recoding)
     meta <- infile[-which(names(infile)=="recoding")]
@@ -75,15 +79,24 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
   }
   
   # Allow for various shortcuts in the writing of recodings
-  reallabels <- c("recodingOf", "attribute", "values", "link", "originalValues", "doNotRecode")
+  # The following lines normalise the input to the cannonical form
+
+  reallabels <- c(
+    "recodingOf", "attribute", "values", "link",
+    "originalValues", "doNotRecode", "comments")
+  remove <- c()
+  
   for (i in 1:length(recoding)) {
+
     # write labels in full
     names(recoding[[i]]) <- reallabels[pmatch(names(recoding[[i]]),reallabels)]    
   
+    # when doNotRecode is specified, you're ready to go
+    # if not: then 
     if (is.null(recoding[[i]]$doNotRecode)) {
-      # recodingOf is necessary
+      # recodingOf is necessary, otherwise break
       if (is.null(recoding[[i]]$recodingOf)) {
-        stop(paste("Specify **recodingOf** for recoding number",number,sep = " "))
+        stop(paste("Specify **recodingOf** for recoding number", i, sep = " "))
       }
       # with no link, add doNotRecode
       if (is.null(recoding[[i]]$link)) { 
@@ -94,11 +107,16 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
         if (is.null(recoding[[i]]$attribute)) {
           recoding[[i]]$attribute <- paste("Att", i, sep = "")
         }
-        if (is.null(recoding[[i]]$values)) {
+        if (is.null(unlist(recoding[[i]]$values))) {
           recoding[[i]]$values <- paste("val", 1:length(recoding[[i]]$link), sep = "")
         }
       }
+    } else {
+      if (!is.null(recoding[[i]]$link)) {
+        stop(paste("Both doNotRecode and link specified in recoding number", i, sep = " "))
+      }
     }
+    
     # when data is specified, add names of original attributes and original values
     # this leads to nicer documentation of the recoding
     if (!is.null(data)) {
@@ -118,6 +136,19 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
     # put everything in the same order
     recoding[[i]] <- recoding[[i]][reallabels]
     recoding[[i]] <- recoding[[i]][na.omit(names(recoding[[i]]))]
+    
+    # merge sequences of doNotRecode
+    if (i > 1) {
+      if (!is.null(recoding[[i]]$doNotRecode) & !is.null(recoding[[i-1]]$doNotRecode)) {
+      recoding[[i]]$doNotRecode <- c(recoding[[i-1]]$doNotRecode, recoding[[i]]$doNotRecode)
+      remove <- c(remove,(i-1))
+      }
+    }
+  }
+  
+  # remove superflous recodings because of contractions of doNotRecode
+  if (!is.null(remove)) {
+    recoding <- recoding[-remove]
   }
   
   # return result
@@ -135,7 +166,10 @@ read.recoding <- function(recoding, file = NULL, data = NULL) {
       meta <- c(list(title = NULL), meta)
     }
     outfile <- c(meta, list(recoding = recoding))
-    cat(as.yaml(outfile), file = file)
+    yaml <- as.yaml(outfile)
+    yaml <- gsub("\n- recodingOf:","\n# ==========\n- recodingOf:",yaml)
+    yaml <- gsub("\n- doNotRecode:","\n# ==========\n- doNotRecode:",yaml)
+    cat(yaml, file = file)
   }
 }
 
