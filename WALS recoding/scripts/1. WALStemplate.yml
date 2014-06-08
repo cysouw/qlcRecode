@@ -1,0 +1,270 @@
+title: ~
+author: ~
+date: '2014-06-08'
+original_data: ~
+recoding:
+# ==========
+- recodingOf: X1A.Consonant.Inventories
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Small
+  - 2 Moderately small
+  - 3 Average
+  - 4 Moderately large
+  - 5 Large
+  comments: ~
+# ==========
+- recodingOf: X2A.Vowel.Quality.Inventories
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Small (2-4)
+  - 2 Average (5-6)
+  - 3 Large (7-14)
+  comments: ~
+# ==========
+- recodingOf: X3A.Consonant.Vowel.Ratio
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Low
+  - 2 Moderately low
+  - 3 Average
+  - 4 Moderately high
+  - 5 High
+  comments: ~
+# ==========
+- recodingOf: X4A.Voicing.in.Plosives.and.Fricatives
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No voicing constrast
+  - 2 In plosives alone
+  - 3 In fricatives alone
+  - 4 In both plosives and fricatives
+  comments: ~
+# ==========
+- recodingOf: X5A.Voicing.and.Gaps.in.Plosive.Systems
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Other
+  - 2 None missing in /p t k b d g/
+  - 3 Missing /p/
+  - 4 Missing /g/
+  - 5 Both missing
+  comments: ~
+# ==========
+- recodingOf: X6A.Uvular.Consonants
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 None
+  - 2 Uvular stops only
+  - 3 Uvular continuants only
+  - 4 Uvular stops and continuants
+  comments: ~
+# ==========
+- recodingOf: X7A.Glottalized.Consonants
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No glottalized consonants
+  - 2 Ejectives only
+  - 3 Implosives only
+  - 4 Glottalized resonants only
+  - 5 Ejectives and implosives
+  - 6 Ejectives and glottalized resonants
+  - 7 Implosives and glottalized resonants
+  - 8 Ejectives, implosives, and glottalized resonants
+  comments: ~
+# ==========
+- recodingOf: X8A.Lateral.Consonants
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No laterals
+  - 2 /l/, no obstruent laterals
+  - 3 Laterals, but no /l/, no obstruent laterals
+  - 4 /l/ and lateral obstruent
+  - 5 No /l/, but lateral obstruents
+  comments: ~
+# ==========
+- recodingOf: X9A.The.Velar.Nasal
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Initial velar nasal
+  - 2 No initial velar nasal
+  - 3 No velar nasal
+  comments: ~
+# ==========
+- recodingOf: X10A.Vowel.Nasalization
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Contrast present
+  - 2 Contrast absent
+  comments: ~
+# ==========
+- recodingOf: X11A.Front.Rounded.Vowels
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 None
+  - 2 High and mid
+  - 3 High only
+  - 4 Mid only
+  comments: ~
+# ==========
+- recodingOf: X12A.Syllable.Structure
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Simple
+  - 2 Moderately complex
+  - 3 Complex
+  comments: ~
+# ==========
+- recodingOf: X13A.Tone
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No tones
+  - 2 Simple tone system
+  - 3 Complex tone system
+  comments: ~
+# ==========
+- recodingOf: X14A.Fixed.Stress.Locations
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No fixed stress
+  - 2 Initial
+  - 3 Second
+  - 4 Third
+  - 5 Antepenultimate
+  - 6 Penultimate
+  - 7 Ultimate
+  comments: ~
+# ==========
+- recodingOf: X15A.Weight.Sensitive.Stress
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - '1 Left-edge: First or second'
+  - '2 Left-oriented: One of the first three'
+  - '3 Right-edge: Ultimate or penultimate'
+  - '4 Right-oriented: One of the last three'
+  - '5 Unbounded: Stress can be anywhere'
+  - '6 Combined: Right-edge and unbounded'
+  - 7 Not predictable
+  - 8 Fixed stress (no weight-sensitivity)
+  comments: ~
+# ==========
+- recodingOf: X16A.Weight.Factors.in.Weight.Sensitive.Stress.Systems
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 No weight
+  - 2 Long vowel
+  - 3 Coda consonant
+  - 4 Long vowel or coda consonant
+  - 5 Prominence
+  - 6 Lexical stress
+  - 7 Combined
+  comments: ~
+# ==========
+- recodingOf: X17A.Rhythm.Types
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 Trochaic
+  - 2 Iambic
+  - '3 Dual: both trochaic and iambic'
+  - 4 Undetermined
+  - 5 No rhythmic stress
+  comments: ~
+# ==========
+- recodingOf: X18A.Absence.of.Common.Consonants
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 All present
+  - 2 No bilabials
+  - 3 No fricatives
+  - 4 No nasals
+  - 5 No bilabials or nasals
+  - 6 No fricatives or nasals
+  comments: ~
+# ==========
+- recodingOf: X19A.Presence.of.Uncommon.Consonants
+  attribute: ~
+  values:
+  - ~
+  - ~
+  link: ~
+  originalValues:
+  - 1 None
+  - 2 Clicks
+  - 3 Labial-velars
+  - 4 Pharyngeals
+  - 5 'Th' sounds
+  - 6 Clicks, pharyngeals, and 'th'
+  - 7 Pharyngeals and "th"
+  comments: ~

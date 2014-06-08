@@ -1,0 +1,26 @@
+title: ~
+author: ~
+date: '2014-06-08'
+original_data: ~
+recoding:
+# ==========
+- doNotRecode:
+  - X1A.Consonant.Inventories
+  - X2A.Vowel.Quality.Inventories
+  - X3A.Consonant.Vowel.Ratio
+  - X4A.Voicing.in.Plosives.and.Fricatives
+  - X5A.Voicing.and.Gaps.in.Plosive.Systems
+  - X6A.Uvular.Consonants
+  - X7A.Glottalized.Consonants
+  - X8A.Lateral.Consonants
+  - X9A.The.Velar.Nasal
+  - X10A.Vowel.Nasalization
+  - X11A.Front.Rounded.Vowels
+  - X12A.Syllable.Structure
+  - X13A.Tone
+  - X14A.Fixed.Stress.Locations
+  - X15A.Weight.Sensitive.Stress
+  - X16A.Weight.Factors.in.Weight.Sensitive.Stress.Systems
+  - X17A.Rhythm.Types
+  - X18A.Absence.of.Common.Consonants
+  - X19A.Presence.of.Uncommon.Consonants

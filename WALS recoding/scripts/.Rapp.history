@@ -1,0 +1,568 @@
+wals <- read.table("../sources/language.csv",sep="\t",header=T,row.names=1)
+wals <- read.table("../sources/language.csv",sep="\t",header=T,row.names=1,quote="",na.strings="",comment.char="")
+wals <- read.table("../sources/language.csv",sep="\t",header=T,quote="",na.strings="",comment.char="")
+which(duplicated(wals[,1]))
+wals[43,1]
+wals <- read.table("../sources/language.csv",sep=",",header=T,quote="",na.strings="",comment.char="")
+wals <- read.csv("../sources/language.csv",sep=",",header=T,na.strings="",comment.char="")
+str(wals)
+wals[1:10,1:10]
+which(duplicated(wals[,1]))
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")
+meta <- wals[,1:7]
+data <- wals[,8:ncol(wals)]
+data[1:10,1:10]
+colnames(data)
+library(qlcRecode)
+write.recoding.template(attributes=1:ncol(data),data=data,file="firstlook.yaml")
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(attributes=1:ncol(data),data=data,file="firstlook.yaml")
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(attributes=1:10,data=data,file="firstlook.yaml")
+read.recoding("firstlook.yaml","clean.yaml",data=data)
+read.recoding("firstlook.yaml",data=data)->tmp
+tmp
+tmp[[1]]$values
+is.null(tmp[[1]]$values)
+is.null(unlist(tmp[[1]]$values))
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]
+read.recoding("firstlook.yaml",data=data)
+tmp <- recode(data,"firstlook.yaml")->tmp
+tmp <- recode(data,"firstlook.yaml")
+str(tmp)
+tmp[1:10,1:10]
+tmp[1:10,1:9]
+table(data[,1],tmp[,1])
+write.recoding.template(attributes=1:ncol(data),data=data,file="WALStemplate.yml")
+tmp
+read.recoding("WALStemplate.yaml",data=data,file="test.yml")
+read.recoding("WALStemplate.yml",data=data,file="test.yml")
+recode(data,"test.yml")->tmp
+tmp[1:10,1:10]
+tmp[1:10]
+read.recoding("WALStemplate.yml",data=data)[1:5]
+unlist(read.recoding("WALStemplate.yml",data=data)[2:3])
+as.list(unlist(read.recoding("WALStemplate.yml",data=data)[2:3]))
+read.recoding("WALStemplate.yml",data=data)[1:5]->tmp
+tmp[[2]]$doNotRecode <- c(tmp[[2]]$doNotRecode,tmp[[3]]$doNotRecode)
+tmp
+tmp <- tmp[-3]
+tmp
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "CleanWALStemplate.yml",#
+	data = data#
+	)
+1==1 & 3==3 & 4==4
+list(x=3,y=5,z=5)->tmp
+tmp
+for (i in 1:length(tmp)){if(i>1&!is.null(tmp[[i]] & !is.null(tmp[[i-1]]))) {print{"yes"}}}
+for (i in 1:length(tmp)){if(i>1&!is.null(tmp[[i]] & !is.null(tmp[[i-1]]))) {print("yes")}}
+for (i in 1:length(tmp)){if(i>1&!is.null(tmp[[i]] & !is.null(tmp[[(i-1)]]))) {print("yes")}}
+for (i in 1:length(tmp)){if(i>1&!is.null(tmp[[i]] & !is.null(tmp[[c(i-1)]]))) {print("yes")}}
+for (i in 1:length(tmp)){t <- i-1;if(i>1&!is.null(tmp[[i]] & !is.null(tmp[[t]]))) {print("yes")}}
+t
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "CleanWALStemplate.yml",#
+	data = data#
+	)
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "CleanWALStemplate.yml",#
+	data = data#
+	)
+all.equal(data, recode(data,"WALStemplate.yml"))
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml"))
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml"))#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml"))
+all.equal(data, recode(data,"EmptyRecodingWALS.yml")) # TRUE
+tmp
+tmp <- list(x=3,y=4,z=5)
+tmp[-c(2,3)]
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"EmptyRecodingWALS.yml")) # TRUE
+i
+write.recoding.template(#
+	attributes = 1:2, #
+	file = "WALStemplate.yml",#
+	data = data#
+	)
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:2, #
+	file = "WALStemplate.yml",#
+	data = data#
+	)
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	data = data#
+	)->tmp
+tmp
+tmp[-1]
+tmp[-c(1,2)]
+write.recoding.template(#
+	attributes = 1:2, #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml")) # TRUE
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml")) # TRUE
+recode(data,"WALStemplate.yml")->tmp
+str(tmp)
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml")) # TRUE
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"EmptyRecodingWALS.yml")) # TRUE
+tmp <- list(3)
+tmp
+tmp[-c()]
+is.null(c())
+tmp[-NULL]
+# recoding WALS#
+#
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"EmptyRecodingWALS.yml")) # TRUE
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"1. WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "WALStemplate.yml",#
+	file = "EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"2. EmptyRecodingWALS.yml")) # TRUE
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "1. WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"1. WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "1. WALStemplate.yml",#
+	file = "2. EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"2. EmptyRecodingWALS.yml")) # TRUE
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]#
+#
+# preparing recoding#
+#
+write.recoding.template(#
+	attributes = 1:ncol(data), #
+	file = "1. WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data, recode(data,"1. WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "1. WALStemplate.yml",#
+	file = "2. EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data, recode(data,"2. EmptyRecodingWALS.yml")) # TRUE
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+walsRecoded[1:10,1:5]
+data[1:10,1:5]
+read.recoding("3. WALSrecoding.yml")->tmp
+tmp[[1]]
+read.recoding("3. WALSrecoding.yml",file="test.yml")
+table(data[,8])
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)
+library(qlcMatrix)
+?qlcMatrix
+sim.obs(data[,1:11])->old
+colnames(walsRecoded)[1:15]
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+colnames(walsRecoded)[1:15]
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)#
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+colnames(walsRecoded)[1:15]
+colnames(walsRecoded)[1:25]
+sim.obs(data[,1:18])->new
+plot(as.dist(new[1:500,1:500]),as.dist(old[1:500,1:500]))
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)#
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+table(walsRecoded[,3],walsRecoded[,4])
+chisq.test(table(walsRecoded[,3],walsRecoded[,4]))
+chisq.test(table(walsRecoded[,3],walsRecoded[,4]))$residuals
+wals <- read.csv("http://wals.info/static/download/wals-language.csv.zip",sep=",",row.names=1,header=T,na.strings="",comment.char="")
+wals <- read.csv(url("http://wals.info/static/download/wals-language.csv.zip"),sep=",",row.names=1,header=T,na.strings="",comment.char="")
+wals <- read.csv(url("http://wals.info/static/download/wals-language.csv.zip", encoding="UTF-8"),sep=",",row.names=1,header=T,na.strings="",comment.char="")
+gzfile(""http://wals.info/static/download/wals-language.csv.zip")->tmp
+gzfile("http://wals.info/static/download/wals-language.csv.zip")->tmp
+str(tmp)
+unz("http://wals.info/static/download/wals-language.csv.zip")->tmp
+library(qlcRecode)#
+#
+# reading data#
+wals <- read.csv("../sources/language.csv",sep=",",row.names=1,header=T,na.strings="",comment.char="")#
+meta <- wals[,1:7]#
+data <- wals[,8:ncol(wals)]
+phonFeat <- 1:19#
+#
+write.recoding.template(#
+	attributes = phonFeat, #
+	file = "1. WALStemplate.yml",#
+	data = data#
+	)#
+#
+# nothing is said to be changed in the bare template#
+# so nothing is recoded#
+#
+all.equal(data[,phonFeat], recode(data,"1. WALStemplate.yml")) # TRUE#
+#
+# just taking the empty template and cleaning it#
+#
+read.recoding(#
+	recoding = "1. WALStemplate.yml",#
+	file = "2. EmptyRecodingWALS.yml",#
+	data = data#
+	)#
+#
+# looks are changed, but still nothing is recoded#
+#
+all.equal(data[,phonFeat], recode(data,"2. EmptyRecodingWALS.yml")) # TRUE
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)#
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+dim(walsRecoded)
+str(walsRecoded)
+summary(walsRecoded)
+read.recoding(#
+	recoding = "3. WALSrecoding.yml",#
+	file = "4. CleanWALSrecoding.yml",#
+	data = data#
+	)#
+walsRecoded <- recode(data,"4. CleanWALSrecoding.yml")
+library(qlcMatrix)
+att <- sim.att(walsRecoded)
+plot(hclust(as.dist(-att),method="ward"),cex=.7)
+W <- splitTable(walsRecoded)
+plot(hclust(as.dist(-att),method="ward.D2"),cex=.7)
+str(W)
+?cosMissing
+?assocRows
+?assoc
+?assocSparse
+val <- assocCol(W$OV,W$AV)
+plot(hclust(as.dist(-val),method="ward.D2"),cex=.7)
+plot(hclust(as.dist(-val),method="ward.D2"),cex=.7,labels=W$values)
+plot(hclust(as.dist(-val),method="ward.D2"),cex=.5,labels=W$values)
+att <- sim.att(walsRecoded, method="variation")
+plot(hclust(as.dist(att),method="ward.D2"),cex=.7)
+att <- sim.att(walsRecoded, method="mutual")
+plot(hclust(as.dist(-att),method="ward.D2"),cex=.7)
+att <- sim.att(walsRecoded, method="chuprov")
+plot(hclust(as.dist(-att),method="ward.D2"),cex=.7)
+heatmap(as.matrix(att))
+heatmap(as.matrix(att),symm=T)
+read.recoding(#
+	recoding = "5. WALSbinary.yml",#
+	file = "6. CleanWALSbinary.yml",#
+	data = data#
+	)
+walsBinary <- recode(data,"6. CleanWALSbinary.yml")
+summary(walsBinary)
+att <- sim.att(walsBinary, method="chuprov")#
+plot(hclust(as.dist(-att),method="ward.D2"),cex=.7)
+heatmap(as.matrix(att), symm = TRUE)
+read.recoding(#
+	recoding = "5. WALSbinary.yml",#
+	file = "6. CleanWALSbinary.yml",#
+	data = data#
+	)#
+#
+walsBinary <- recode(data,"6. CleanWALSbinary.yml")#
+summary(walsBinary)#
+#
+# analyse with qlcMatrix#
+library(qlcMatrix)#
+#
+att <- sim.att(walsBinary, method="chuprov")#
+plot(hclust(as.dist(-att),method="ward.D2"),cex=.7)
+heatmap(as.matrix(att), symm = TRUE)
+read.recoding(#
+	recoding = "5. WALSbinary.yml",#
+	file = "6. CleanWALSbinary.yml",#
+	data = data#
+	)#
+#
+walsBinary <- recode(data,"6. CleanWALSbinary.yml")#
+summary(walsBinary)
+att <- sim.att(walsBinary, method="chuprov")#
+plot(hclust(as.dist(-att),method="ward.D"),cex=.7)
+heatmap(as.matrix(att), symm = TRUE)
+heatmap(as.matrix(att)^2, symm = TRUE)
+heatmap(as.matrix(att)^0.5, symm = TRUE)
+plot(hclust(as.dist(-att),method="average"),cex=.7)
+att <- sim.att(walsBinary, method="variation")
+plot(hclust(as.dist(att),method="average"),cex=.7)
+plot(hclust(as.dist(att),method="ward"),cex=.7)
+att <- sim.att(walsBinary, method="mutual")
+plot(hclust(as.dist(att),method="average"),cex=.7)
