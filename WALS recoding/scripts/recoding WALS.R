@@ -59,11 +59,13 @@ read.recoding(
 walsBinary <- recode(data,"6. CleanWALSbinary.yml")
 summary(walsBinary)
 
+write.table(cbind(meta,walsBinary),file="../data/WALS phonological binary.tsv",sep="\t")
+
 # analyse with qlcMatrix
 library(qlcMatrix)
 
 att <- sim.att(walsBinary, method="chuprov")
 plot(hclust(as.dist(-att),method="average"),cex=.7)
-heatmap(as.matrix(att)^0.5, symm = TRUE)
+heatmap(as.matrix(att)^0.5, symm = TRUE,cexRow=.7)
 
 
