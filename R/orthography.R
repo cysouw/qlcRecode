@@ -1,6 +1,5 @@
 # Orthography Profiles
-# An orthography profile is assumed to be a list of (1) a character matrix and (2) some regex-expression
-# regexes are not yet implemented
+# An orthography profile is assumed to be a list of (1) a character matrix and (2) some regex-expression as a list
 
 # =================================================================
 # write orthography profile with frequencies for further processing
@@ -50,8 +49,10 @@ read.orthography.profile <- function(file, graphemes = "Graphemes", replace = NU
 
   # prepare rules
   rulesFile <- paste(filename, ".rules", sep = "")
-  if (!is.null(rulesFile)) {
-    rules <- NULL #do something here
+  if (file.exists(rulesFile)) {
+    rules <- scan(rulesFile, , what = "character", sep = "\n")
+    rules <- rules[grep("^[^#]", rules)]
+    rules <- strsplit(rules, split = ", ")
   } else {
     rules  <- NULL
   }
@@ -129,6 +130,14 @@ tokenize <- function(strings, orthography.profile,
   strings <- gsub(pattern = paste(sep, "$", sep = ""), replacement = "", strings)
   strings <- gsub(pattern = paste(sep, sep, "+", sep = ""), replacement = sep, strings)
   strings <- gsub(pattern = paste(boundary, "(", sep, boundary, ")+", sep = ""), replacement = boundary, strings)  
+  
+  # apply regexes when specified in the orthography profile
+  # this does not yet work as expected
+  if(!is.null(orthography.profile$rules)) {
+    for (i in orthography.profile$rules) {
+      strings <- gsub(pattern = i[1], replacement = i[2], strings)
+    }
+  }
   
   # return parsed strings, possibly with warnings of unmatch strings
   if (sum(leftover) == 0) {
