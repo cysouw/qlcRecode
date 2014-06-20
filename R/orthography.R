@@ -5,8 +5,10 @@
 # write orthography profile with frequencies for further processing
 # =================================================================
 
-write.orthography.profile <- function(strings, file = NULL) {
+write.orthography.profile <- function(strings, file = NULL, ignore = " ") {
 
+  # remove space (by default)
+  strings <- gsub(ignore,"",strings)
   # add space
   strings <- gsub(""," ",strings)
   # remove space before combining and diacritics
@@ -23,17 +25,16 @@ write.orthography.profile <- function(strings, file = NULL) {
     return(summary)
   } else {
     export <- cbind(names(summary), names(summary), summary)
-    colnames(export) <- c("Graphemes", "Replace", "Frequency")
-    write.table(export, file = "~/Desktop/test.txt", quote = FALSE, sep = "\t", row.names = FALSE)
+    colnames(export) <- c("graphemes", "replace", "frequency")
+    write.table(export, file = file, quote = FALSE, sep = "\t", row.names = FALSE)
   }
 }
-  
   
 # ========================
 # read orthography profile
 # ========================
 
-read.orthography.profile <- function(file, graphemes = "Graphemes", replace = NULL) {
+read.orthography.profile <- function(file, graphemes = "graphemes", replacements = NULL) {
 
   # prepare naming of files
   if (substr(file, nchar(file)-2, nchar(file)) == "prf") {
@@ -45,7 +46,7 @@ read.orthography.profile <- function(file, graphemes = "Graphemes", replace = NU
   # prepare table
   tableFile <- paste(filename, ".prf", sep = "")
   op <- read.table(tableFile, sep = "\t", header = TRUE, colClasses = "character", quote = "", fill = TRUE)
-  graphs <- op[, c(graphemes, replace), drop = FALSE]
+  graphs <- op[, c(graphemes, replacements), drop = FALSE]
 
   # prepare rules
   rulesFile <- paste(filename, ".rules", sep = "")
@@ -66,24 +67,25 @@ read.orthography.profile <- function(file, graphemes = "Graphemes", replace = NU
 # ================
 
 tokenize <- function(strings, orthography.profile, 
-                     graphemes = "Graphemes", replace = NULL,
-                     sep = " ", boundary = "#", add.boundary = FALSE ) {
+                     graphemes = "graphemes", replacements = NULL,
+                     sep = " ", boundary = "#", add.boundary = FALSE) {
 
-  # prepare strings, and normalise nfd, just to be sure
-  strings <- stri_trans_nfd(strings)
+  # prepare strings, and normalise nfc, just to be sure
+  originals <- as.vector(strings)
+  strings <- stri_trans_nfc(strings)
   strings <- gsub(pattern = sep, replacement = boundary, x = strings)
   if (add.boundary) {
     strings <- paste(boundary, strings, boundary, sep = "")
   }
   
-  # read orthography profile and normalise nfd, just to be sure
+  # read orthography profile and normalise nfc, just to be sure
   if (is.character(orthography.profile)) {
-    orthography.profile <- read.orthography.profile(orthography.profile, 
-                                                    graphemes = graphemes, replace = replace)
+    orthography.profile <- read.orthography.profile(
+      orthography.profile, graphemes = graphemes, replacements = replacements)
   }
   graphs <- orthography.profile$graphs[,graphemes]
-  graphs <- stri_trans_nfd(graphs)
-
+  graphs <- stri_trans_nfc(graphs)
+  
   # order graphs to size
   graphs_parts <- strsplit(graphs, split = "")
   graphs_length <- sapply(graphs_parts, length)
@@ -94,16 +96,18 @@ tokenize <- function(strings, orthography.profile,
   # just take some high unicode range and replace all graphemes with individual characters
   check <- strings
   for (i in graph_order) { 
-    check <- gsub(graphs[i],"",check)
+    check <- gsub(graphs[i],"",check, fixed = TRUE)
     strings <- gsub(pattern = graphs[i], replacement = intToUtf8(1110000 + i), strings, fixed = TRUE)    
   }
   
   # check for missing graphems in orthography profile and produce warning
+  check <- gsub(boundary,"",check)
+  check <- stri_replace_all_regex(check, "(\\p{DIACRITIC})", " $1")
   leftover <- check != ""
   if (sum(leftover) > 0) {
     warning("There are characters in the data that are not in the orthography profile. 
-    Check output$warnings for a table with all problematic strings.")
-    problems <- cbind(strings[leftover],check[leftover])
+            Check $warnings for a table with all problematic strings.")
+    problems <- cbind(originals[leftover],check[leftover])
     colnames(problems) <- c("original strings","unmatched parts")
     rownames(problems) <- which(leftover)
   }
@@ -114,9 +118,9 @@ tokenize <- function(strings, orthography.profile,
   strings <- sapply(strings, function(x){paste(x, collapse = sep)})
   
   # replace orthography if specified
-  if (!is.null(replace)) {
-    graphs <- orthography.profile$graphs[,replace]
-    graphs <- stri_trans_nfd(graphs)
+  if (!is.null(replacements)) {
+    graphs <- orthography.profile$graphs[,replacements]
+    graphs <- stri_trans_nfc(graphs)
     graphs[graphs == "NULL"] <- ""
   }
   
@@ -130,9 +134,9 @@ tokenize <- function(strings, orthography.profile,
   strings <- gsub(pattern = paste(sep, "$", sep = ""), replacement = "", strings)
   strings <- gsub(pattern = paste(sep, sep, "+", sep = ""), replacement = sep, strings)
   strings <- gsub(pattern = paste(boundary, "(", sep, boundary, ")+", sep = ""), replacement = boundary, strings)  
-  
+ 
   # apply regexes when specified in the orthography profile
-  # this does not yet work as expected
+  # this does not yet completely work as expected
   if(!is.null(orthography.profile$rules)) {
     for (i in orthography.profile$rules) {
       strings <- gsub(pattern = i[1], replacement = i[2], strings)
@@ -146,3 +150,5 @@ tokenize <- function(strings, orthography.profile,
     return( list(parsed = strings, warnings = problems) )
   }
 }
+
+tokenise <- tokenize
