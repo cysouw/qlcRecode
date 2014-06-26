@@ -43,12 +43,12 @@ write.orthography.profile(strings, file = NULL, sep = " ",
   }
   \item{add.boundary}{
   logical: should a boundary symbol be added to the start and the end of all strings? Defaults to \code{FALSE}
+  }
   \item{ignore}{
   elements to be ignored while preparing orthography profile. Can be any regular expression, but defaults to space.
   }
   \item{clustering}{
-  vector with names for Unicode Categories and/or Unicode Properties, specifying which clusters of characters are to be combined into graphemes.
-  }
+  vector with names for Unicode Categories and/or Unicode Properties, specifying which clusters of characters are to be combined into graphemes, see \code{\link{stringi-search-charclass}}.
   }
 } 
 \details{
