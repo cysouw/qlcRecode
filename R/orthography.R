@@ -5,14 +5,16 @@
 # write orthography profile with frequencies for further processing
 # =================================================================
 
-write.orthography.profile <- function(strings, file = NULL, ignore = " ") {
+write.orthography.profile <- function(strings, file = NULL, ignore = " "
+	, clustering = c("Lm", "DIACRITIC", "EXTENDER")) {
 
   # remove space (by default)
   strings <- gsub(ignore,"",strings)
   # add space
   strings <- gsub(""," ",strings)
   # remove space before combining and diacritics
-  strings <- stri_replace_all_regex(strings, " (\\p{Lm}|\\p{DIACRITIC}|\\p{EXTENDER})", "$1")
+  cluster_regex <- paste0(" (\\p{",paste(clustering, collapse = "}|\\p{"),"})")
+  strings <- stri_replace_all_regex(strings, cluster_regex, "$1")
   # remove empty spaces at start and end
   strings <- stri_trim_both(strings)
   # split everything by space

@@ -16,7 +16,8 @@ tokenize(strings, orthography.profile,
   sep = " ", boundary = "#", add.boundary = FALSE)
 
 read.orthography.profile(file, graphemes = "graphemes", replacements = NULL)
-write.orthography.profile(strings, file = NULL, sep = " ")
+write.orthography.profile(strings, file = NULL, sep = " ", 
+	clustering = c("Lm", "DIACRITIC", "EXTENDER"))
 }
 \arguments{
   \item{strings}{
@@ -44,6 +45,9 @@ write.orthography.profile(strings, file = NULL, sep = " ")
   logical: should a boundary symbol be added to the start and the end of all strings? Defaults to \code{FALSE}
   \item{ignore}{
   elements to be ignored while preparing orthography profile. Can be any regular expression, but defaults to space.
+  }
+  \item{clustering}{
+  vector with names for Unicode Categories and/or Unicode Properties, specifying which clusters of characters are to be combined into graphemes.
   }
   }
 } 
