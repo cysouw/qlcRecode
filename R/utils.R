@@ -2,7 +2,7 @@
 
 morfessor <- function(data) {
   cat(data, file = "datatmp", sep = "\n")
-  result <- system("/Applications/Morfessor-2.0.1/build/scripts-2.7/morfessor -t datatmp -T datatmp", intern = TRUE)
+  result <- system("/Applications/Morfessor-2.0.1/build/scripts-2.7/morfessor -t datatmp -T datatmp --compound-separator '' ", intern = TRUE)
   file.remove("datatmp")
   return(result)
 }
