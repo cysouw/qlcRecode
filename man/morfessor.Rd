@@ -19,7 +19,7 @@ vector of strings to be separated into morphemes
 Location of bash executable linking to Morfessor is currently hardcoded. A temporary file with the data is made at \code{getwd()} and deleted afterwards.
 }
 \value{
-Returns a vector of the same lengths as \code(data) with morphemes separated by spaces.
+Returns a vector of the same lengths as \code{data} with morphemes separated by spaces.
 }
 \references{
 Morfessor: \url{http://www.cis.hut.fi/projects/morpho/morfessor2.shtml}
