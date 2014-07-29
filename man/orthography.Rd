@@ -16,8 +16,8 @@ tokenize(strings, orthography.profile,
   sep = " ", boundary = "#", add.boundary = FALSE)
 
 read.orthography.profile(file, graphemes = "graphemes", replacements = NULL)
-write.orthography.profile(strings, file = NULL, sep = " ", 
-	clustering = c("Lm", "DIACRITIC", "EXTENDER"))
+write.orthography.profile(strings, file = NULL, ignore = " ", 
+	classes = c("Lm", "DIACRITIC", "EXTENDER"), symbols = NULL)
 }
 \arguments{
   \item{strings}{
@@ -47,8 +47,11 @@ write.orthography.profile(strings, file = NULL, sep = " ",
   \item{ignore}{
   elements to be ignored while preparing orthography profile. Can be any regular expression, but defaults to space.
   }
-  \item{clustering}{
+  \item{classes}{
   vector with names for Unicode Categories and/or Unicode Properties, specifying which clusters of characters are to be combined into graphemes, see \code{\link{stringi-search-charclass}}.
+  }
+  \item{symbols}{
+  vector with individual Unicode Codepoints that should be treated as combining characters with the characters before into complex graphemes.
   }
 } 
 \details{
