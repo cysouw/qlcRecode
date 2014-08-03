@@ -11,20 +11,19 @@ Tokenization of character strings based on an orthography profile
 To process strings it is often very useful to tokenise them into graphemes (i.e. functional units of the orthography), and possibly replace those graphemes by other symbols to harmonize the orthographic representation of different orthographic representations (`transcription'). As a quick and easy way to specify, save, and document the decisions taken for the tokenization, we propose using an orthography profile.
 }
 \usage{
-tokenize(strings, orthography.profile, 
+tokenize(strings, orthography.profile = NULL, 
   graphemes = "graphemes", replacements = NULL,
-  sep = " ", boundary = "#", add.boundary = FALSE)
+  sep = "\u00B7", boundary = " ", add.boundary = FALSE)
 
 read.orthography.profile(file, graphemes = "graphemes", replacements = NULL)
-write.orthography.profile(strings, file = NULL, ignore = " ", 
-	classes = c("Lm", "DIACRITIC", "EXTENDER"), symbols = NULL)
+write.orthography.profile(strings, file = NULL, info = FALSE)
 }
 \arguments{
   \item{strings}{
   vector of strings to the tokenized.
   }
   \item{orthography.profile}{
-  orthography profile specifying the graphemes for the tokenization, and possibly any replacements of the available graphemes. Can be a filename or an object as returned by \code{read.orthography.profile}.
+  orthography profile specifying the graphemes for the tokenization, and possibly any replacements of the available graphemes. Can be a filename or an object as returned by \code{read.orthography.profile}. If \code{NULL} then the orthography profile will be created on the fly using the defaults of \code{write.orthography.profile}.
   }
   \item{graphemes}{
   name (or number) of the column in the orthography profile listing the graphemes to be used for the tokenization
@@ -36,33 +35,29 @@ write.orthography.profile(strings, file = NULL, ignore = " ",
   filename for orthography profile to be read or written.
   }
   \item{sep}{
-  separator to be inserted between graphemes. Defaults to space.
+  separator to be inserted between graphemes. Defaults to U+00B7 ("MIDDLE DOT").
   }
   \item{boundary}{
-  boundary symbol to be inserted into the tokenized strings. If the separator (see above) is present in the original string, this original separator is replaced by the boundary symbol. Defaults to hash (#).
+  boundary symbol to be inserted into the tokenized strings. If the separator (see above) is present in the original string, this original separator is replaced by the boundary symbol. Defaults to space.
   }
   \item{add.boundary}{
-  logical: should a boundary symbol be added to the start and the end of all strings? Defaults to \code{FALSE}
+  logical: should a boundary symbol be added to the start and the end of all strings? Defaults to \code{FALSE}.
+  \item{info}{
+  logical: should extra Unicode-info (codepoints and Unicode names) be added in the generation of an orthography profile? Defaults to \code{FALSE}.
   }
-  \item{ignore}{
-  elements to be ignored while preparing orthography profile. Can be any regular expression, but defaults to space.
-  }
-  \item{classes}{
-  vector with names for Unicode Categories and/or Unicode Properties, specifying which clusters of characters are to be combined into graphemes, see \code{\link{stringi-search-charclass}}.
-  }
-  \item{symbols}{
-  vector with individual Unicode Codepoints that should be treated as combining characters with the characters before into complex graphemes.
   }
 } 
 \details{
-To produce an orthography profile, consider using \code{write.orthography.profile} to produce a useful starting point. This function will take a vector of strings and produce a table with all possible graphemes and their frequency. Combining diacritics and spacing modifier letters are combined with their preceding characters to obtain a reasonable first guess at available graphemes. There is no attempt made to recognize real multigraphs (like 'sch' of 'aa'). Such multigraphs can be specified manually in the output file of this function.
+To produce an orthography profile, consider using \code{write.orthography.profile} to produce a useful starting point. This function will take a vector of strings and produce a table with all graphemes and their frequency. Combining diacritics and spacing modifier letters are combined with their preceding characters to obtain a reasonable first guess at available graphemes. There is no attempt made to recognize 'tailored' multigraphs (like 'sch' of 'aa'). Such multigraphs can be specified manually in the output file of this function.
 
-The function \code{read.orthography.profile} can be used to read any saved orthography profile into R, though mostly this will be used internally by \code{tokenize}. An orthography profile currently consists of minimally a csv-table with a column of graphemes to be separated, typically using a \code{.prf} suffix. Further columns with replacements can be specified. When further rule-based changes are needed (for complex orthographic regularities), these can be specified as regex 'search, replace' strings in a separate file with the same name, but using a \code{.rules} suffix.
+The function \code{read.orthography.profile} can be used to read any saved orthography profile into R, though mostly this function will be used internally by \code{tokenize}. An orthography profile currently consists of minimally a csv-table with a column of graphemes to be separated, typically using a \code{.prf} suffix. Further columns with replacements can be specified. When further rule-based changes are needed (for complex orthographic regularities), these can be specified as regex 'search, replace' strings in a separate file with the same name, but using a \code{.rules} suffix.
 
 The central functionality is found in the \code{tokenize} function. This function will tokenize (and possibly replace) the strings into graphemes. Any rules specified in the \code{.rules} file will be applied first, and then the graphemes from the \code{.prf} table will be tokenized, starting from the largest graphemes (in unicode-code-point count using NFC normalisation). Any unmatched sequences in the data will be reported with a warning
 }
 \value{
-Without warnings, \code{tokenize} will return a vector with the tokenized strings in NFC normalisation. When a warning occurs, a list of two elements is returned:
+Without warnings, \code{tokenize} will return a vector with the tokenized strings in NFC normalisation. Note that any NFD (or other) encoding in the original data is turned into NFC. 
+
+When a warning occurs, a list of two elements is returned:
 \item{parsed}{the vector with the parsed strings}
 \item{warnings}{a table with all original strings and the unmatched parts}
 }

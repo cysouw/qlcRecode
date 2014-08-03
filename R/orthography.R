@@ -5,30 +5,35 @@
 # write orthography profile with frequencies for further processing
 # =================================================================
 
-write.orthography.profile <- function(strings, file = NULL, ignore = " "
-	, classes = c("Lm", "DIACRITIC", "EXTENDER"), symbols = NULL ) {
+write.orthography.profile <- function(strings, file = NULL, info = FALSE) {
+                                        
+  splitted <- stri_split_boundaries(strings, boundary = "character")
+  summary <- table(unlist(splitted))
+ 
+  # prepare result
+  chars <- names(summary)
+  result <- cbind(chars, chars, summary)
+  colnames(result) <- colnames(result) <- c("graphemes", "replace", "frequency")
+  rownames(result) <- NULL
 
-  # remove space (by default)
-  strings <- gsub(ignore,"",strings)
-  # add space
-  strings <- gsub(""," ",strings)
-  # remove space before combining and diacritics
-  cluster_regex <- paste0(" (\\p{",paste(clustering, collapse = "}|\\p{"),"}","|[",paste(symbols,collapse=""),"]",")")
-  strings <- stri_replace_all_regex(strings, cluster_regex, "$1")
-  # remove empty spaces at start and end
-  strings <- stri_trim_both(strings)
-  # split everything by space
-  strings <- unlist(strsplit(strings," "))
-  # compute statistics
-  summary <- table(strings)
-  
-  # return statistics as table, or write to file when "file" is specified
+  # add codepoints and Unicode names when info = TRUE
+  if (info) {    
+    codepoints <- sapply(chars, function(x) {
+      paste(stri_trans_general(unlist(strsplit(x,"")), "Any-Hex/Unicode"), collapse = ", ")
+    })
+    names <- sapply(chars, function(x) {
+      paste(stri_trans_general(unlist(strsplit(x,"")), "Any-Name"), collapse = ", ")
+    })
+    names <- gsub("\\N{", "", names, fixed= TRUE)
+    names <- gsub("}", "", names, fixed = TRUE)
+    result <- cbind(result, codepoints, names)
+  }
+
+  # return statistics as data frame, or write to file when "file" is specified
   if (is.null(file)) {
-    return(summary)
+    return(as.data.frame(result))
   } else {
-    export <- cbind(names(summary), names(summary), summary)
-    colnames(export) <- c("graphemes", "replace", "frequency")
-    write.table(export, file = file, quote = FALSE, sep = "\t", row.names = FALSE)
+    write.table(result, file = file, quote = FALSE, sep = "\t", row.names = FALSE)
   }
 }
   
@@ -73,25 +78,30 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
 # tokenize strings
 # ================
 
-tokenize <- function(strings, orthography.profile, 
+tokenize <- function(strings, orthography.profile = NULL,
                      graphemes = "graphemes", replacements = NULL,
-                     sep = " ", boundary = "#", add.boundary = FALSE) {
+                     sep = "\u00B7", boundary = " ", add.boundaries = FALSE) {
 
-  # prepare strings, and normalise nfc, just to be sure
+  # prepare strings, and normalize NFC everything always
   originals <- as.vector(strings)
   strings <- stri_trans_nfc(strings)
-  strings <- gsub(pattern = sep, replacement = boundary, x = strings)
-  if (add.boundary) {
+
+  # replace any occurring separators with boundary
+  strings <- gsub(sep, boundary, strings)
+  if (add.boundaries) {
     strings <- paste(boundary, strings, boundary, sep = "")
   }
   
   # read orthography profile
-  if (is.character(orthography.profile)) {
+  if (!is.null(orthography.profile)) {
     orthography.profile <- read.orthography.profile(
       orthography.profile, graphemes = graphemes, replacements = replacements)
+  } else {
+    graphs <- write.orthography.profile(strings)[, c(graphemes, replacements), drop = FALSE]
+    orthography.profile <- list( graphs = graphs, rules = NULL )
   }
   
-  # do grapheme-splitting and normalise nfc, just to be sur
+  # do grapheme-splitting and normalise nfc, just to be sure
   if(!is.null(orthography.profile$graphs)) {
     graphs <- orthography.profile$graphs[,graphemes]
     graphs <- stri_trans_nfc(graphs)
