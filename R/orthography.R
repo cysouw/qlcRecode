@@ -94,8 +94,10 @@ tokenize <- function(strings, orthography.profile = NULL,
   
   # read orthography profile
   if (!is.null(orthography.profile)) {
+    if (is.character(orthography.profile)) {
     orthography.profile <- read.orthography.profile(
       orthography.profile, graphemes = graphemes, replacements = replacements)
+    }
   } else {
     graphs <- write.orthography.profile(strings)[, c(graphemes, replacements), drop = FALSE]
     orthography.profile <- list( graphs = graphs, rules = NULL )
@@ -126,8 +128,7 @@ tokenize <- function(strings, orthography.profile = NULL,
     check <- stri_replace_all_regex(check, "(\\p{DIACRITIC})", " $1")
     leftover <- check != ""
     if (sum(leftover) > 0) {
-      warning("There are characters in the data that are not in the orthography profile. 
-              Check $warnings for a table with all problematic strings.")
+      warning("There are characters in the data that are not in the orthography profile. Check $warnings for a table with all problematic strings.")
       problems <- cbind(originals[leftover],check[leftover])
       colnames(problems) <- c("original strings","unmatched parts")
       rownames(problems) <- which(leftover)
