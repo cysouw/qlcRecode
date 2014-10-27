@@ -5,7 +5,7 @@
 # write orthography profile with frequencies for further processing
 # =================================================================
 
-write.orthography.profile <- function(strings, sep = NULL, file = NULL, info = FALSE) {
+write.orthography.profile <- function(strings, replacements = TRUE, sep = NULL, file = NULL, info = FALSE) {
 
   if (is.null(sep)) {
     splitted <- stri_split_boundaries(strings, boundary = "character")
@@ -16,8 +16,13 @@ write.orthography.profile <- function(strings, sep = NULL, file = NULL, info = F
   
   # prepare result
   chars <- names(summary)
-  result <- cbind(chars, chars, summary)
-  colnames(result) <- colnames(result) <- c("graphemes", "replacements", "frequency")
+  if (replacements) {
+    result <- cbind(chars, chars, summary)
+    colnames(result) <- colnames(result) <- c("graphemes", "replacements", "frequency")
+  } else {
+    result <- cbind(chars, summary)
+    colnames(result) <- colnames(result) <- c("graphemes", "frequency")   
+  }
   rownames(result) <- NULL
 
   # add codepoints and Unicode names when info = TRUE
@@ -82,9 +87,10 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
 # tokenize strings
 # ================
 
-tokenize <- function(strings, normalize = "NFC",
+tokenize <- function(strings, 
                      orthography.profile = NULL, graphemes = NULL, replacements = NULL,
-                     sep = "\u00B7", traditional.output = FALSE, file = NULL) {
+                     sep = "\u00B7", normalize = "NFC", 
+                     traditional.output = FALSE, file = NULL) {
 
   # normalization
   if (normalize == "NFC" | normalize == "nfc") {
@@ -187,32 +193,43 @@ tokenize <- function(strings, normalize = "NFC",
     sep <- " # | "
   }
 
-  # make 'empirical' orthography profile
-  
-
   # results
+  tokenization <- as.data.frame(cbind(originals = originals, tokenized = strings))
+
+  if (is.null(replacements)) {
+    show.replacements <- TRUE
+  } else {
+    show.replacements <- FALSE
+  }
+
   if (is.null(file)) {
-    empirical.profile <- write.orthography.profile(strings, sep = sep)
+    empirical.profile <- write.orthography.profile(strings, replacements = show.replacements, sep = sep)
     # return parsed strings, possibly with warnings of unmatch strings inside R
     if (sum(leftover) == 0) {
-      return( list( strings = cbind(originals = originals, tokenized = strings)
-                    , orthography.profile = empirical.profile
+      return( list( strings = tokenization
+                    , graphemes = empirical.profile
                     )
               )
     } else {     
-      return( list( strings = cbind(originals = originals, tokenized = strings)
+      return( list( strings = tokenization
+                    , graphemes = empirical.profile
                     , warnings = problems
-                    , orthography.profile = empirical.profile$graphs
                     )
               )
     }
   } else {
     write.table(
-      cbind(originals = originals, tokenized = strings)
+      tokenization
       , file = paste(file, ".txt", sep = "")
       , quote = FALSE, sep = "\t", row.names = FALSE
       )
-    write.orthography.profile(strings, sep = sep, file = paste(file, ".prf", sep=""), info = TRUE)
+
+    write.orthography.profile(
+      strings, replacements = show.replacements, sep = sep
+      , file = paste(file, ".prf", sep="")
+      , info = TRUE
+      )
+    
     if (sum(leftover) != 0) {
       write.table(
         problems
@@ -223,4 +240,5 @@ tokenize <- function(strings, normalize = "NFC",
   }
 }
 
+# allow alternative spelling
 tokenise <- tokenize

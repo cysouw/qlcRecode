@@ -11,12 +11,13 @@ Tokenization of character strings based on an orthography profile
 To process strings it is often very useful to tokenise them into graphemes (i.e. functional units of the orthography), and possibly replace those graphemes by other symbols to harmonize the orthographic representation of different orthographic representations (`transcription'). As a quick and easy way to specify, save, and document the decisions taken for the tokenization, we propose using an orthography profile.
 }
 \usage{
-tokenize(strings, normalize = "NFC",
+tokenize(strings,
   orthography.profile = NULL, graphemes = NULL, replacements = NULL,
-  sep = "\u00B7", traditional.output = FALSE, file = NULL) 
+  sep = "\u00B7", normalize = "NFC",
+  traditional.output = FALSE, file = NULL) 
 
 read.orthography.profile(file, graphemes = "graphemes", replacements = NULL)
-write.orthography.profile(strings, sep = NULL, file = NULL, info = FALSE)
+write.orthography.profile(strings, replacements = TRUE, sep = NULL, file = NULL, info = FALSE)
 }
 \arguments{
   \item{strings}{
@@ -53,10 +54,10 @@ To produce an orthography profile, consider using \code{write.orthography.profil
 
 The function \code{read.orthography.profile} can be used to read any saved orthography profile into R, though mostly this function will be used internally by \code{tokenize}. An orthography profile currently consists of minimally a csv-table with a column of graphemes to be separated, typically using a \code{.prf} suffix. Further columns with replacements can be specified. When further rule-based changes are needed (for complex orthographic regularities), these can be specified as regex 'search, replace' strings in a separate file with the same name, but using a \code{.rules} suffix.
 
-The central functionality is found in the \code{tokenize} function. This function will tokenize (and possibly replace) the strings into graphemes. Any rules specified in the \code{.rules} file will be applied first, and then the graphemes from the \code{.prf} table will be tokenized, starting from the largest graphemes (in unicode-code-point count using NFC normalisation). Any unmatched sequences in the data will be reported with a warning
+The central functionality is found in the \code{tokenize} function. This function will tokenize (and possibly replace) the strings into graphemes. First, the graphemes from the \code{.prf} table will be tokenized, starting from the largest graphemes (in unicode-code-point count using NFC normalisation). Any unmatched sequences in the data will be reported with a warning. Any rules specified in the \code{.rules} file will be applied at the end.
 }
 \value{
-Without warnings, \code{tokenize} will return a vector with the tokenized strings in NFC normalisation. Note that any NFD (or other) encoding in the original data is turned into NFC. 
+Without warnings, \code{tokenize} will return a dataframe with the original and the tokenized strings in NFC normalisation (by default).
 
 When a warning occurs, a list of two elements is returned:
 \item{parsed}{the vector with the parsed strings}
@@ -76,7 +77,7 @@ colnames(gr) <- c("graphemes","replace")
 ( op <- list(graphs = gr, rules = NULL) )
 
 # tokenization
-tokenize("nana änngschä ach", op, graphemes = "graphemes")
+tokenize(c("nana", "änngschä", "ach"), op, graphemes = "graphemes")
 # with replacements and an error message
-tokenize("Naná änngschä ach", op, graphemes = "graphemes", replace = "replace")
+tokenize(c("Naná", "änngschä", "ach"), op, graphemes = "graphemes", replace = "replace")
 }
