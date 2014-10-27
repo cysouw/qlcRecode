@@ -11,19 +11,22 @@ Tokenization of character strings based on an orthography profile
 To process strings it is often very useful to tokenise them into graphemes (i.e. functional units of the orthography), and possibly replace those graphemes by other symbols to harmonize the orthographic representation of different orthographic representations (`transcription'). As a quick and easy way to specify, save, and document the decisions taken for the tokenization, we propose using an orthography profile.
 }
 \usage{
-tokenize(strings, orthography.profile = NULL, 
-  graphemes = "graphemes", replacements = NULL,
-  sep = "\u00B7", boundary = " ", add.boundary = FALSE)
+tokenize(strings, normalize = "NFC",
+  orthography.profile = NULL, graphemes = NULL, replacements = NULL,
+  sep = "\u00B7", traditional.output = FALSE, file = NULL) 
 
 read.orthography.profile(file, graphemes = "graphemes", replacements = NULL)
-write.orthography.profile(strings, file = NULL, info = FALSE)
+write.orthography.profile(strings, sep = NULL, file = NULL, info = FALSE)
 }
 \arguments{
   \item{strings}{
   vector of strings to the tokenized.
   }
+  \item{normalize}{
+  which normalization to use, defaults to "NFC". Other option is "NFD". Any other input will result in no normalisation being performed.
+  }
   \item{orthography.profile}{
-  orthography profile specifying the graphemes for the tokenization, and possibly any replacements of the available graphemes. Can be a filename or an object as returned by \code{read.orthography.profile}. If \code{NULL} then the orthography profile will be created on the fly using the defaults of \code{write.orthography.profile}.
+  orthography profile specifying the graphemes for the tokenization, and possibly any replacements of the available graphemes. Can be a filename or an object as returned by \code{read.orthography.profile}. If NULL then the orthography profile will be created on the fly using the defaults of \code{write.orthography.profile}.
   }
   \item{graphemes}{
   name (or number) of the column in the orthography profile listing the graphemes to be used for the tokenization
@@ -32,16 +35,14 @@ write.orthography.profile(strings, file = NULL, info = FALSE)
   name (or number) of the column in the orthography profile listing the replacements. If NULL, then nothing is replaced.
   }
   \item{file}{
-  filename for orthography profile to be read or written.
+  filename for results to be written (or orthography profile to be read).
   }
   \item{sep}{
-  separator to be inserted between graphemes. Defaults to U+00B7 ("MIDDLE DOT").
+  with the function \code{tokenize}, this is the separator to be inserted between graphemes. Defaults to U+00B7 ("MIDDLE DOT"). With the function \code{write.orthography.profile}, this is the separator to separate the strings. When NULL here (by default), unicode character definitions are used to split.
   }
-  \item{boundary}{
-  boundary symbol to be inserted into the tokenized strings. If the separator (see above) is present in the original string, this original separator is replaced by the boundary symbol. Defaults to space.
+  \item(traditional.output){
+  logical, defaults to FALSE. When TRUE, then the tokenized strings are presented with spaces between graphemes and space-hash-space (\code{" # "}) instead of spaces in the original strings.
   }
-  \item{add.boundary}{
-  logical: should a boundary symbol be added to the start and the end of all strings? Defaults to \code{FALSE}.
   \item{info}{
   logical: should extra Unicode-info (codepoints and Unicode names) be added in the generation of an orthography profile? Defaults to \code{FALSE}.
   }
