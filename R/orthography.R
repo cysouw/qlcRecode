@@ -7,15 +7,18 @@
 
 write.orthography.profile <- function(strings, replacements = TRUE, sep = NULL, file = NULL, info = FALSE) {
 
+  # split using unicode definitions, except when 'sep' is specified, then split by sep
   if (is.null(sep)) {
     splitted <- stri_split_boundaries(strings, boundary = "character")
   } else {
     splitted <- strsplit(strings, sep)
   }
-  summary <- table(unlist(splitted))
-  
+    
   # prepare result
+  summary <- table(unlist(splitted))
   chars <- names(summary)
+  
+  # add a column for editing replacements when 'replacements = TRUE'
   if (replacements) {
     result <- cbind(chars, chars, summary)
     colnames(result) <- colnames(result) <- c("graphemes", "replacements", "frequency")
@@ -88,9 +91,9 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
 # ================
 
 tokenize <- function(strings, 
-                     orthography.profile = NULL, graphemes = NULL, replacements = NULL,
+                     orthography.profile = NULL, graphemes = "graphemes", replacements = NULL,
                      sep = "\u00B7", normalize = "NFC", 
-                     traditional.output = FALSE, file = NULL) {
+                     traditional.output = TRUE, file = NULL) {
 
   # normalization
   if (normalize == "NFC" | normalize == "nfc") {
@@ -101,28 +104,27 @@ tokenize <- function(strings,
     transcode <- identity
   }
   
-  # prepare strings, and normalize NFC everything always
+  # prepare strings, and normalize NFC everything by default
   originals <- as.vector(strings)
   strings <- transcode(originals)
   
   # read orthography profile (or make new one)
   if (is.null(orthography.profile)) {
-    graphs  <- write.orthography.profile(strings)[, c("graphemes", "replacements"), drop = FALSE]
+    # make new orthography profile   
+    graphs  <- write.orthography.profile(strings)[, graphemes, drop = FALSE]
     profile <- list(graphs = graphs, rules = NULL)    
   } else if (is.character(orthography.profile)) {
-    profile <- read.orthography.profile(orthography.profile
-                                        , graphemes = graphemes
-                                        , replacements = replacements
-                                        )
+    # read profile from file
+    profile <- read.orthography.profile(orthography.profile, graphemes, replacements)
   } else {
-      # in case profile is an R object
-      profile <- orthography.profile
+    # in case orthography profile is an R object
+    profile <- orthography.profile
   }
   
   # do grapheme-splitting
   if(!is.null(profile$graphs)) {
-    # normalise, just to be sure
-    graphs <- transcode(profile$graphs[,"graphemes"])
+    # normalise characters in profile, just to be sure
+    graphs <- transcode(profile$graphs[,graphemes])
   
     # order graphs to size
     graphs_parts <- strsplit(graphs, split = "")
@@ -135,15 +137,16 @@ tokenize <- function(strings,
     check <- strings
     for (i in graph_order) { 
       check <- gsub(graphs[i],"",check, fixed = TRUE)
-      strings <- gsub(pattern = graphs[i], replacement = intToUtf8(1110000 + i), 
-                      strings, fixed = TRUE)    
+      strings <- gsub(pattern = graphs[i]
+                      , replacement = intToUtf8(1110000 + i)
+                      , strings, fixed = TRUE)    
     }
     
     # check for missing graphems in orthography profile and produce warning
     check <- stri_replace_all_regex(check, "(\\p{DIACRITIC})", " $1")
     leftover <- check != ""
     if (sum(leftover) > 0) {
-      warning("There are characters in the data that are not in the orthography profile. Check $warnings for a table with all problematic strings.")
+      warning("There are characters in the data that are not in the orthography profile. Check warnings for a table with all problematic strings.")
       problems <- cbind(originals[leftover],check[leftover])
       colnames(problems) <- c("original strings","unmatched parts")
       rownames(problems) <- which(leftover)
@@ -157,14 +160,15 @@ tokenize <- function(strings,
     # replace orthography if specified
     if (!is.null(replacements)) {
       graphs <- profile$graphs[,replacements]
-      graphs <- stri_trans_nfc(graphs)
+      graphs <- transcode(graphs)
       graphs[graphs == "NULL"] <- ""
     }
     
     # put back the multigraphs-substitution characters
     for (i in graph_order) {
-      strings <- gsub(pattern = intToUtf8(1110000 + i), replacement = graphs[i], 
-                      strings, fixed = TRUE)
+      strings <- gsub(pattern = intToUtf8(1110000 + i)
+                      , replacement = graphs[i]
+                      , strings, fixed = TRUE)
     }
     
     # remove superfluous spaces at start and end
@@ -193,52 +197,64 @@ tokenize <- function(strings,
     sep <- " # | "
   }
 
-  # results
+  # prepare results
+  # first: combine orignal strings and tokenized strings in a dataframe
   tokenization <- as.data.frame(cbind(originals = originals, tokenized = strings))
-
-  if (is.null(replacements)) {
-    show.replacements <- TRUE
-  } else {
-    show.replacements <- FALSE
-  }
-
+  profile <- write.orthography.profile(strings, sep = sep, info = TRUE)
+  
+  # various options for output
   if (is.null(file)) {
-    empirical.profile <- write.orthography.profile(strings, replacements = show.replacements, sep = sep)
-    # return parsed strings, possibly with warnings of unmatch strings inside R
-    if (sum(leftover) == 0) {
-      return( list( strings = tokenization
-                    , graphemes = empirical.profile
-                    )
-              )
-    } else {     
-      return( list( strings = tokenization
-                    , graphemes = empirical.profile
-                    , warnings = problems
-                    )
-              )
-    }
-  } else {
-    write.table(
-      tokenization
-      , file = paste(file, ".txt", sep = "")
-      , quote = FALSE, sep = "\t", row.names = FALSE
-      )
+    # output as R object (list)
+       
+    if (is.null(orthography.profile)) {
+      # user didn't specify an orthography profile, so give one in return
+      return(list(strings = tokenization, orthography.profile = profile, warnings =  NULL))
 
-    write.orthography.profile(
-      strings, replacements = show.replacements, sep = sep
-      , file = paste(file, ".prf", sep="")
-      , info = TRUE
-      )
+    } else {
+      if (is.null(replacements)) {
+      # with OP, but without replacements, an orthography profile is returned as well
+        if (sum(leftover) == 0 ) {
+         # no errors, return tokenization and OP
+          return(list(strings = tokenization, orthography.profile = profile, warnings = NULL))
+        } else { 
+        # with errors, add table with errors
+        return(list(strings = tokenization, orthography.profile = profile, warnings = problems))
+        } 
+      } else {
+        # with replacements, no orthography profile can be returned in a sensible way
+        if (sum(leftover) == 0 ) {
+          # no errors, just return tokenization
+          return(list(strings = tokenization, orthography.profile = NULL, warnings = NULL))
+        } else {
+          # with errors, add table with errors
+          return(list(strings = tokenization, orthography.profile = NULL, warnings = problems))
+        }
+      }
+    }
+
+  } else {
+    # output as file(s)
     
-    if (sum(leftover) != 0) {
-      write.table(
-        problems
-        , file = paste(file, "_problems.txt", sep = "")
-        , quote = FALSE, sep = "\t", row.names = FALSE
-        )
+    # file with tokenization is always returned
+    write.table(tokenization
+                , file = paste(file, ".txt", sep = "")
+                , quote = FALSE, sep = "\t", row.names = FALSE)
+    
+    if (is.null(replacements)) {
+      # additionally write orthography profile
+      write.orthography.profile(strings, sep = sep, info = TRUE
+                                , file = paste(file, ".prf", sep=""))
+    }
+    
+    if (sum(leftover) > 0 ) {
+      # additionally write table with warnings
+      write.table(problems
+                  , file = paste(file, "_warnings.txt", sep = "")
+                  , quote = FALSE, sep = "\t", row.names = FALSE)
     }
   }
-}
+}  
+ 
 
 # allow alternative spelling
 tokenise <- tokenize

@@ -41,12 +41,11 @@ write.orthography.profile(strings, replacements = TRUE, sep = NULL, file = NULL,
   \item{sep}{
   with the function \code{tokenize}, this is the separator to be inserted between graphemes. Defaults to U+00B7 ("MIDDLE DOT"). With the function \code{write.orthography.profile}, this is the separator to separate the strings. When NULL here (by default), unicode character definitions are used to split.
   }
-  \item(traditional.output){
+  \item{traditional.output}{
   logical, defaults to FALSE. When TRUE, then the tokenized strings are presented with spaces between graphemes and space-hash-space (\code{" # "}) instead of spaces in the original strings.
   }
   \item{info}{
   logical: should extra Unicode-info (codepoints and Unicode names) be added in the generation of an orthography profile? Defaults to \code{FALSE}.
-  }
   }
 } 
 \details{
@@ -73,11 +72,11 @@ write.orthography.profile(example)
 
 # make a better orthography profile
 gr <- cbind(c("a","ä","n","ng","ch","sch"),c("a","e","n","N","x","sh"))
-colnames(gr) <- c("graphemes","replace")
+colnames(gr) <- c("graphemes","replacements")
 ( op <- list(graphs = gr, rules = NULL) )
 
 # tokenization
 tokenize(c("nana", "änngschä", "ach"), op, graphemes = "graphemes")
 # with replacements and an error message
-tokenize(c("Naná", "änngschä", "ach"), op, graphemes = "graphemes", replace = "replace")
+tokenize(c("Naná", "änngschä", "ach"), op, graphemes = "graphemes", replacements = "replacements")
 }
