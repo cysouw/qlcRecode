@@ -5,7 +5,7 @@
 # write orthography profile with frequencies for further processing
 # =================================================================
 
-write.orthography.profile <- function(strings, replacements = TRUE, sep = NULL, file = NULL, info = FALSE) {
+write.orthography.profile <- function(strings, replacements = TRUE, sep = NULL, file = NULL, info = TRUE) {
 
   # split using unicode definitions, except when 'sep' is specified, then split by sep
   if (is.null(sep)) {
@@ -53,7 +53,10 @@ write.orthography.profile <- function(strings, replacements = TRUE, sep = NULL, 
 # read orthography profile
 # ========================
 
-read.orthography.profile <- function(file, graphemes = "graphemes", replacements = NULL) {
+read.orthography.profile <- function(file, 
+                                     graphemes = "graphemes", 
+                                     patterns = "patterns", 
+                                     replacements = "replacements") {
 
   # prepare naming of files
   if (substr(file, nchar(file)-2, nchar(file)) == "prf") {
@@ -65,9 +68,9 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
   # prepare table
   graphemesFile <- paste(filename, ".prf", sep = "")
   if (file.exists(graphemesFile)) {
-    op <- read.table(graphemesFile, sep = "\t", header = TRUE, 
+    graphs <- read.table(graphemesFile, sep = "\t", header = TRUE, 
                      colClasses = "character", quote = "", fill = TRUE)
-    graphs <- op[, c(graphemes, replacements), drop = FALSE]
+    graphs <- graphs[, c(graphemes, replacements), drop = FALSE]
   } else {
     graphs = NULL
   }
@@ -75,9 +78,9 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
   # prepare rules
   rulesFile <- paste(filename, ".rules", sep = "")
   if (file.exists(rulesFile)) {
-    rules <- scan(rulesFile, , what = "character", sep = "\n")
-    rules <- rules[grep("^[^#]", rules)]
-    rules <- strsplit(rules, split = ", ")
+    rules <- read.table(rulesFile, sep = "\t", header = TRUE,
+                        colClasses = "character", quote = "")
+    rules <- rules[, c(patterns, replacements), drop = FALSE]
   } else {
     rules  <- NULL
   }
@@ -90,8 +93,8 @@ read.orthography.profile <- function(file, graphemes = "graphemes", replacements
 # tokenize strings
 # ================
 
-tokenize <- function(strings, 
-                     orthography.profile = NULL, graphemes = "graphemes", replacements = NULL,
+tokenize <- function(strings, orthography.profile = NULL, 
+                     graphemes = "graphemes", patterns = "patterns", replacements = NULL,
                      sep = "\u00B7", normalize = "NFC", 
                      traditional.output = TRUE, file = NULL) {
 
@@ -115,7 +118,7 @@ tokenize <- function(strings,
     profile <- list(graphs = graphs, rules = NULL)    
   } else if (is.character(orthography.profile)) {
     # read profile from file
-    profile <- read.orthography.profile(orthography.profile, graphemes, replacements)
+    profile <- read.orthography.profile(orthography.profile, graphemes, patterns, replacements)
   } else {
     # in case orthography profile is an R object
     profile <- orthography.profile
@@ -180,15 +183,6 @@ tokenize <- function(strings,
     # also no error message returned
     leftover <- 0
   }
-    
-  # apply regexes when specified in the orthography profile
-  # this does not yet completely work as expected
-  if(!is.null(orthography.profile$rules)) {
-    for (i in orthography.profile$rules) {
-      i <- transcode(i)
-      strings <- gsub(pattern = i[1], replacement = i[2], strings)
-    }
-  }
 
   # make traditional output when asked
   if (traditional.output){
@@ -197,6 +191,15 @@ tokenize <- function(strings,
     sep <- " # | "
   }
 
+  # apply regexes when specified in the orthography profile
+  # this does not yet completely work as expected
+  if(!is.null(profile$rules) & !is.null(replacements)) {
+    for (i in 1:nrow(profile$rules) ) {
+      regex <- transcode(as.character(profile$rules[i,]))
+      strings <- gsub(pattern = regex[1], replacement = regex[2], strings)
+    }
+  }
+  
   # prepare results
   # first: combine orignal strings and tokenized strings in a dataframe
   tokenization <- as.data.frame(cbind(originals = originals, tokenized = strings))
