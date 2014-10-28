@@ -8,6 +8,6 @@ Maintainer: Michael Cysouw <cysouw@mac.com>
 Description: When using external data, there are often various tweaks that one would like to perform before using the data for further research. This package offers assistance for some common recoding problems occurring in Quantitative Language Comparison (QLC)
 License: GPL-3
 Encoding: UTF-8
-Depends: yaml (>= 2.1.11), stringi (>= 0.2-5)
+Depends: yaml (>= 2.1.11)
 Suggests: knitr
 VignetteBuilder: knitr
