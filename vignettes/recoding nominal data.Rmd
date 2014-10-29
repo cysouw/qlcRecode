@@ -1,16 +1,18 @@
 ---
-title: Recoding nominal data
-author: Michael Cysouw <cysouw@mac.com>
-output:
+title: "Recoding nominal data"
+author: "Michael Cysouw"
+date: "`r Sys.Date()`"
+output: 
   pdf_document:
     number_sections: yes
   md_document:
     variant: markdown_github
+  rmarkdown::html_vignette:
+vignette: >
+  %\VignetteIndexEntry{Specifying orthography tokenization}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Recoding nominal data}
--->
 
 ```{r setup, include = FALSE}
 library(qlcRecode)
