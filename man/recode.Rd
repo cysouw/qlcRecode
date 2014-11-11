@@ -56,7 +56,7 @@ For writing recodings by hand, there are various shortcuts allowed:
 
 A minimal recoding consist thus of a specification of \code{recodingOf} and \code{link}. Without \code{link} nothing will be recoded. Omitting \code{recodingOf} will lead to an error.
 
-There is a vignette available with detailed information about the process of recoding, check \code{\link{recoding nominal data}}.
+There is a vignette available with detailed information about the process of recoding, check \code{recoding nominal data}.
 }
 
 \value{
@@ -75,8 +75,5 @@ Cysouw, Michael, Jeffrey Craig Good, Mihai Albu and Hans-Jörg Bibiko. 2005. Can
 Michael Cysouw
 }
 \seealso{
-\code{\link{wals}} contains typical data that most people would very much like to recode before using for further analysis. See Cysouw et al. 2005 for a discussion of various issues surrounding the WALS data.
-}
-\examples{
-
+The World Atlas of Language Structure (WALS) contains typical data that most people would very much like to recode before using for further analysis. See Cysouw et al. 2005 for a discussion of various issues surrounding the WALS data.
 }
