@@ -1,3 +1,5 @@
+** Package is deprecated as it is included in another package. Please use <http://github.com/cysouw/qlcData> in the future **
+
 qlcRecode
 =========
 
